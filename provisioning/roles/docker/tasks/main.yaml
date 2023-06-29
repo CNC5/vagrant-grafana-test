@@ -1,0 +1,10 @@
+- name: Install docker
+  ansible.builtin.apt:
+    name: docker
+    update_cache: yes
+    state: present
+
+- name: Install docker-compose
+  ansible.builtin.apt:
+    name: docker-compose
+    state: present

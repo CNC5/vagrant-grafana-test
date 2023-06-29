@@ -1,0 +1,15 @@
+[Unit]
+Description=Node exporter service
+After=network-online.target
+
+[Service]
+Type=notify
+ExecStart=/usr/bin/prometheus-node-exporter
+KillMode=process
+Delegate=yes
+TimeoutStartSec=0
+Restart=always
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target

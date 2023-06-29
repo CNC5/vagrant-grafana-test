@@ -1,0 +1,52 @@
+- name: Copy deployment yaml
+  template:
+    src: "deployment.yaml.j2"
+    dest: "docker-compose.yaml"
+    mode: 0644
+
+- name: Mkdir datasources
+  file: 
+    path: datasources
+    state: directory
+
+- name: Mkdir dashboards
+  file: 
+    path: dashboards
+    state: directory
+
+- name: Mkdir dashboards-json
+  file:
+    path: dashboards-json
+    state: directory
+
+- name: Mkdir prometheus
+  file:
+    path: prometheus
+    state: directory
+
+- name: Copy grafana datasource
+  template:
+    src: "prometheus-datasource.yaml.j2"
+    dest: "datasources/prometheus-datasource.yaml"
+    mode: 0644
+
+- name: Download the dashboard
+  get_url:
+    url: "https://grafana.com/api/dashboards/1860/revisions/31/download"
+    dest: dashboards-json/1860.json
+
+- name: Copy grafana dashboard config
+  template:
+    src: "dashboard-config.yaml.j2"
+    dest: "dashboards/default.yaml"
+    mode: 0644
+
+- name: Copy prometheus config
+  template:
+    src: "prometheus-config.yaml.j2"
+    dest: "prometheus/prometheus.yml"
+    mode: 0644
+
+- name: Create and start services
+  community.docker.docker_compose:
+    project_src: .

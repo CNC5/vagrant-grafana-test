@@ -1,0 +1,34 @@
+version: "3.5"
+services:
+  grafana:
+    image: grafana/grafana-enterprise
+    ports:
+      - "3000:3000"
+    networks:
+      - grafana-backbone
+    restart: always
+    volumes:
+      - type: bind
+        source: ./datasources
+        target: /etc/grafana/provisioning/datasources
+      - type: bind
+        source: ./dashboards
+        target: /etc/grafana/provisioning/dashboards
+      - type: bind
+        source: ./dashboards-json
+        target: /var/lib/grafana/dashboards
+  prometheus:
+    image: prom/prometheus
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - grafana-backbone
+    restart: always
+    volumes:
+      - type: bind
+        source: ./prometheus
+        target: /etc/prometheus
+
+networks:
+  grafana-backbone:
+    name: grafana-backbone
